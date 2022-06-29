@@ -1,35 +1,39 @@
 <template>
-  <div
-    :class="['todo-item', todoProps.completed ? 'completed' : '']"
-    class="flex items-center justify-between"
-  >
-    <div class="info flex items-center justify-between gap-2">
-      <input
-        type="checkbox"
-        :checked="todoProps.completed"
-        @change="markItemCompleted"
-        class="text-4xl w-4 h-4"
-      />
-      <div class="text-xl text-cyan-600">{{ todoProps.title }}</div>
-      <div class="text-xl text-cyan-600">{{ todoProps.person }}</div>
-      <div class="text-xl text-cyan-600">{{ todoProps.dateCompleted }}</div>
-    </div>
-    <div class="button flex items-center justify-between gap-2">
+  <div class="list">
+    <div class="info flex gap-4">
+      <div class="text-xl text-cyan-800">{{ todoProps.title }}</div>
+      <div class="text-xl text-cyan-800">{{ todoProps.person }}</div>
+      <div class="text-xl text-cyan-800">{{ todoProps.dateCompleted }}</div>
       <button class="btn-edit btn bg-orange-500 text-white" @click="editItem">
-        Edit
+        <i class="bx bx-edit-alt"></i>
       </button>
       <button class="btn-delete btn bg-red-500 text-white" @click="deleteItem">
-        Delete
+        <i class="bx bx-x"></i>
       </button>
+    </div>
+    <div class="update" v-if="showUpdateForm">
+      <form @submit.prevent="updateTodo">
+        <input class="a" type="text" v-model="title" />
+        <input type="text" v-model="person" />
+        <input type="date" v-model="dateCompleted" />
+        <button type="submit">Update</button>
+      </form>
     </div>
   </div>
 </template>
 
 <script>
+import { ref } from "vue";
 export default {
   name: "TodoItem",
   props: ["todoProps"],
   setup(props, context) {
+    let showDetails = ref(false);
+    let showUpdateForm = ref(false);
+    let person = ref("");
+    let dateCompleted = ref("");
+    let title = ref("");
+
     const markItemCompleted = () => {
       context.emit("item-completed", props.todoProps.id);
     };
@@ -39,13 +43,34 @@ export default {
     };
 
     const editItem = () => {
-      context.emit("item-edit", props.todoProps.id);
+      showUpdateForm.value = !showUpdateForm.value;
+      person.value = props.todoProps.person;
+      dateCompleted.value = props.todoProps.dateCompleted;
+      title.value = props.todoProps.title;
+    };
+
+    const updateTodo = () => {
+      let updateItem = {
+        id: props.todoProps.id,
+        title: title,
+        person: person,
+        dateCompleted: dateCompleted,
+      };
+      context.emit("item-edit", updateItem);
+
+      showUpdateForm.value = false;
     };
 
     return {
       markItemCompleted,
       deleteItem,
       editItem,
+      showDetails,
+      showUpdateForm,
+      title,
+      person,
+      dateCompleted,
+      updateTodo,
     };
   },
 };

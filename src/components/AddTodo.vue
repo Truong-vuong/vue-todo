@@ -13,7 +13,7 @@
       class="outline-none border-none p-2 text-green-700 font-bold"
     />
     <input
-      type="text"
+      type="date"
       v-model="dateCompleted"
       placeholder="Completed..."
       class="outline-none border-none p-2 text-green-700 font-bold"
@@ -27,43 +27,69 @@
 </template>
 
 <script>
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { v4 as uuidv4 } from "uuid";
 
 export default {
   name: "AddTodo",
-  props: ["todoChild"],
-
+  // props: ["todoChild"]["todos"],
+  props: {
+    todoChild: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
+    todos: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
+  },
   setup(props, context) {
-    const test = ref(props.todoChild);
-    const title = ref("");
-    const person = ref("");
-    const dateCompleted = ref("");
-    watch(test, (newVal, oldVal) => {
-      console.log(newVal, oldVal);
-    });
+    // const listDataProps = reactive({ data: props.todos });
+    // const dataTodoChild = reactive(props.todoChild);
+
+    // const dataSubmit = reactive({
+    //   data: Object.assign({}, dataTodoChild.data),
+    // });
+    // watch(
+    //   () => dataTodoChild,
+    //   () => {
+    //     dataSubmit.data = Object.assign({}, dataTodoChild.data);
+    //   },
+    //   { deep: true }
+    // );
+    let title = ref("");
+    let person = ref("");
+    let dateCompleted = ref("");
+
     const addItem = (e) => {
       e.preventDefault();
-      const newItem = {
+      let newItem = {
         id: uuidv4(),
         title: title.value,
         person: person.value,
         dateCompleted: dateCompleted.value,
-        completed: false,
       };
-
       context.emit("add-item", newItem);
-
-      title.value = "";
-      person.value = "";
-      dateCompleted.value = "";
     };
-
+    // watch(
+    //   () => listDataProps,
+    //   (newVal) => {
+    //     console.log("12", newVal);
+    //   },
+    //   { deep: true }
+    // );
     return {
+      // dataTodoChild,
       title,
       person,
       dateCompleted,
       addItem,
+      // listDataProps,
+      // dataSubmit,
     };
   },
 };
