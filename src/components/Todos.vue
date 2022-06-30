@@ -61,17 +61,33 @@ export default {
     );
 
     const sortName = () => {
-      let nameArray = reactive([]);
-      todos.data.forEach((item) => {
-        nameArray.push(item.title);
-      });
-      nameArray.sort();
+      // let nameArray = reactive([]);
+      // todos.data.forEach((item) => {
+      //   nameArray.push(item.title);
+      // });
+      // nameArray.sort();
+      // console.log(nameArray);
 
-      // todos.data.sort((a, b) => a.title - b.title);
-      // console.log(todos.data);
+      let data = todos.data;
+      console.log(
+        data.sort((a, b) => {
+          if (a.title < b.title) return -1;
+          if (a.title > b.title) return 1;
+          return 0;
+        })
+      );
     };
 
-    const sortDate = () => {};
+    const sortDate = () => {
+      let a = todos.data;
+      console.log(
+        a.sort((a, b) => {
+          if (a.dateCompleted < b.dateCompleted) return -1;
+          if (a.dateCompleted > b.dateCompleted) return 1;
+          return 0;
+        })
+      );
+    };
 
     const markComplete = (id) => {
       todos.data = todos.data.map((todo) => {
